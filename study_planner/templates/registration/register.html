@@ -1,0 +1,53 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        background: linear-gradient(135deg, #1e1e2f 0%, #0f0f1a 100%);
+        height: 100vh;
+    }
+    .card {
+        border: none;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.95);
+    }
+    .btn-success {
+        background-color: #00b894;
+        border: none;
+        transition: 0.3s;
+    }
+    .btn-success:hover {
+        background-color: #55efc4;
+        transform: translateY(-2px);
+    }
+    p { margin-bottom: 15px; }
+    input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+    }
+    .helptext {
+        font-size: 0.8rem;
+        color: #636e72;
+        display: block;
+        margin-top: 5px;
+    }
+</style>
+
+<body class="d-flex align-items-center justify-content-center">
+    <div class="card p-5 shadow-lg" style="width: 450px;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mt-2">Yeni Hesap Oluştur</h2>
+            <p class="text-muted">Kendi programını yönetmeye başla!</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success w-100 py-2 mt-3">Kayıt Ol ve Başla</button>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <p class="small">Zaten üye misin? <a href="{% url 'login' %}" class="text-decoration-none">Giriş Yap</a></p>
+        </div>
+    </div>
+</body>

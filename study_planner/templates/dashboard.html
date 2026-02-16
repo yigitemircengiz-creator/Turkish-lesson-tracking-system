@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders Programım | Dark Premium 🚀</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { 
+            --primary-color: #6366f1; 
+            --success-color: #10b981; 
+            --info-color: #0ea5e9;
+            --danger-color: #ef4444; 
+            --bg-dark: #0f172a; 
+            --card-bg: rgba(30, 41, 59, 0.7); 
+        }
+
+        body { 
+            background-color: var(--bg-dark); 
+            color: #ffffff !important; 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh; 
+        }
+
+        /* --- ANİMASYONLU KARTLAR --- */
+        .box { 
+            padding: 24px; 
+            border-radius: 24px; 
+            background: var(--card-bg); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            margin-bottom: 20px; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            /* Yumuşak yay efekti */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+
+        .box:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.2); 
+            border-color: var(--primary-color); 
+        }
+
+        h1, h2, h5, .fw-bold, label { color: #ffffff !important; }
+        .text-muted { color: #cbd5e1 !important; }
+
+        /* --- ANİMASYONLU SEKMELER --- */
+        .nav-pills .nav-link { 
+            color: #ffffff; 
+            opacity: 0.7; 
+            font-weight: 600; 
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .nav-pills .nav-link.active { 
+            background-color: var(--primary-color) !important; 
+            opacity: 1; 
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        /* --- GÖREV ÖĞELERİ --- */
+        .task-item { 
+            padding: 15px; 
+            border-radius: 16px; 
+            background: rgba(15, 23, 42, 0.5); 
+            margin-bottom: 10px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            transition: 0.3s;
+        }
+
+        .task-item:hover {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .task-done { text-decoration: line-through; opacity: 0.4; }
+
+        /* --- FORM VE BUTONLAR --- */
+        .form-control { 
+            background: rgba(15, 23, 42, 0.8); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: white !important; 
+            border-radius: 12px; 
+            margin-bottom: 5px; 
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            background: #1e293b;
+            border-color: var(--primary-color);
+            box-shadow: none;
+        }
+
+        .btn { transition: all 0.2s ease; }
+        .btn:active { transform: scale(0.95); }
+
+        /* --- SINAV KARTLARI --- */
+        .exam-card { 
+            background: rgba(14, 165, 233, 0.1); 
+            border-left: 4px solid var(--info-color); 
+            padding: 15px; 
+            border-radius: 16px; 
+            margin-bottom: 15px; 
+            transition: all 0.3s ease;
+        }
+
+        .exam-card:hover {
+            background: rgba(14, 165, 233, 0.2);
+            transform: translateX(8px);
+        }
+
+        .timer-text { color: #38bdf8; font-weight: 700; font-family: monospace; }
+        .btn-logout { 
+            background: rgba(239, 68, 68, 0.2); 
+            color: #ef4444; 
+            border: 1px solid rgba(239, 68, 68, 0.3); 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            text-decoration: none; 
+            font-weight: 600; 
+        }
+    </style>
+</head>
+<body class="py-5">
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1>Hoş geldin, {{ user.username }}! 👋</h1>
+        </div>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout shadow-sm">Güvenli Çıkış</button>
+        </form>
+    </div>
+
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4"><div class="box"><small class="text-uppercase fw-bold text-muted">Günlük</small><h2 class="text-success my-2">%{{ daily_progress }}</h2><div class="progress" style="background: rgba(255,255,255,0.1)"><div class="progress-bar bg-success" style="width: {{ daily_progress }}%"></div></div></div></div>
+        <div class="col-md-4"><div class="box"><small class="text-uppercase fw-bold text-muted">Haftalık</small><h2 class="text-primary my-2">%{{ weekly_progress }}</h2><div class="progress" style="background: rgba(255,255,255,0.1)"><div class="progress-bar bg-primary" style="width: {{ weekly_progress }}%"></div></div></div></div>
+        <div class="col-md-4"><div class="box"><small class="text-uppercase fw-bold text-muted">Aylık</small><h2 class="text-warning my-2">%{{ monthly_progress }}</h2><div class="progress" style="background: rgba(255,255,255,0.1)"><div class="progress-bar bg-warning" style="width: {{ monthly_progress }}%"></div></div></div></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            
+            <div class="box mb-4">
+                <h5 class="mb-4">Yeni Ders Ekle ✍️</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">{{ form.subject }}</div>
+                        <div class="col-6">{{ form.duration_minutes }}</div>
+                        <div class="col-6">{{ form.date }}</div>
+                        <button type="submit" name="add_study" class="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow">Dersi Programa İşle</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="box mb-4" style="border-left: 4px solid var(--info-color);">
+                <h5 class="mb-4">Yeni Sınav Ekle 🎯</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">{{ exam_form.name }}</div>
+                        <div class="col-12">
+                            <label class="small text-muted mb-1">Sınav Tarihi ve Saati</label>
+                            {{ exam_form.date }}
+                        </div>
+                        <button type="submit" name="add_exam" class="btn btn-info w-100 py-3 rounded-4 fw-bold text-white shadow">Sınavı Takvime Ekle</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="box">
+                <h5 class="mb-4">Ders Planların 📅</h5>
+                <ul class="nav nav-pills mb-4" id="pills-tab">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#today">Bugün</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#week">Haftalık</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#month">Aylık</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="today">
+                        {% for t in daily_tasks %}
+                        <div class="task-item">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input me-3" onclick="toggleTask({{ t.id }})" {% if t.is_completed %}checked{% endif %}>
+                                <span class="{% if t.is_completed %}task-done{% endif %}">{{ t.subject }} ({{ t.duration_minutes }} dk)</span>
+                            </div>
+                            <button onclick="deleteTask({{ t.id }})" class="btn text-danger p-0">🗑️</button>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted py-3">Bugünlük plan yok.</p>
+                        {% endfor %}
+                    </div>
+                    <div class="tab-pane fade" id="week">
+                        {% for t in weekly_tasks %}<div class="task-item"><span><strong>{{ t.date|date:"d M" }}</strong> - {{ t.subject }}</span></div>{% endfor %}
+                    </div>
+                    <div class="tab-pane fade" id="month">
+                        {% for t in monthly_tasks %}<div class="task-item"><span><strong>{{ t.date|date:"d/m" }}</strong> - {{ t.subject }}</span></div>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="box mb-4">
+                <h5>Performans Analizi 📊</h5>
+                <canvas id="performanceChart"></canvas>
+            </div>
+
+            <div class="box">
+                <h5 class="mb-4">Sınav Geri Sayımı ⏳</h5>
+                {% for e in exams %}
+                <div class="exam-card">
+                    <div><h6 class="fw-bold mb-1">{{ e.name }}</h6><small class="text-muted">{{ e.date|date:"d F Y - H:i" }}</small></div>
+                    <div id="timer-{{ e.id }}" class="timer-text mt-2 fs-5">Hesaplanıyor...</div>
+                </div>
+                <script>
+                    (function(){
+                        const target=new Date("{{e.date|date:'Y-m-d H:i:s'}}").getTime(); 
+                        setInterval(function(){
+                            const now=new Date().getTime(); 
+                            const diff=target-now; 
+                            if(diff<0){document.getElementById("timer-{{e.id}}").innerHTML="Başladı!";return;} 
+                            const d=Math.floor(diff/(1000*60*60*24)); 
+                            const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60)); 
+                            const min=Math.floor((diff%(1000*60*60))/(1000*60)); 
+                            const s=Math.floor((diff%(1000*60))/1000); 
+                            document.getElementById("timer-{{e.id}}").innerHTML=d+"g "+h+"s "+min+"dk "+s+"sn";
+                        },1000);
+                    })();
+                </script>
+                {% empty %}
+                <p class="text-center text-muted py-3">Henüz sınav eklenmemiş.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    new Chart(document.getElementById('performanceChart').getContext('2d'), { 
+        type: 'line', 
+        data: { 
+            labels: {{ chart_labels|safe }}, 
+            datasets: [{ 
+                label: 'Biten', 
+                data: {{ chart_data|safe }}, 
+                borderColor: '#6366f1', 
+                backgroundColor: 'rgba(99, 102, 241, 0.2)', 
+                borderWidth: 3, 
+                tension: 0.4, 
+                fill: true 
+            }] 
+        }, 
+        options: { 
+            plugins: { legend: { display: false } }, 
+            scales: { 
+                y: { ticks: { color: '#94a3b8', stepSize: 1 } }, 
+                x: { ticks: { color: '#94a3b8' } } 
+            } 
+        } 
+    });
+
+    function toggleTask(id) { fetch(`/toggle-task/${id}/`, {method:'POST', headers:{'X-CSRFToken':'{{csrf_token}}'}}).then(()=>location.reload()); }
+    function deleteTask(id) { if(confirm('Silinsin mi?')) fetch(`/delete-task/${id}/`, {method:'POST', headers:{'X-CSRFToken':'{{csrf_token}}'}}).then(()=>location.reload()); }
+</script>
+</body>
+</html>
