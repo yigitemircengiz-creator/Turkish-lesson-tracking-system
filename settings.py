@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-js2i6u&jgd_m@05ez*xq$nw==1ccd#%8a$@z44c5o4=p84=n&!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['ders-programi.onrender.com', '127.0.0.1']
 
@@ -118,3 +118,11 @@ STATIC_URL = 'static/'
 LOGIN_URL = 'login' 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
+import os
+
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'core/static'),
+]
