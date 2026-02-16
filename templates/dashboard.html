@@ -6,6 +6,7 @@
     <title>Ders Programım | Dark Premium 🚀</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
@@ -24,7 +25,6 @@
             min-height: 100vh; 
         }
 
-        /* --- ANİMASYONLU KARTLAR --- */
         .box { 
             padding: 24px; 
             border-radius: 24px; 
@@ -33,7 +33,6 @@
             border: 1px solid rgba(255,255,255,0.1); 
             margin-bottom: 20px; 
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
-            /* Yumuşak yay efekti */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
 
@@ -46,7 +45,6 @@
         h1, h2, h5, .fw-bold, label { color: #ffffff !important; }
         .text-muted { color: #cbd5e1 !important; }
 
-        /* --- ANİMASYONLU SEKMELER --- */
         .nav-pills .nav-link { 
             color: #ffffff; 
             opacity: 0.7; 
@@ -65,7 +63,6 @@
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 
-        /* --- GÖREV ÖĞELERİ --- */
         .task-item { 
             padding: 15px; 
             border-radius: 16px; 
@@ -84,7 +81,6 @@
 
         .task-done { text-decoration: line-through; opacity: 0.4; }
 
-        /* --- FORM VE BUTONLAR --- */
         .form-control { 
             background: rgba(15, 23, 42, 0.8); 
             border: 1px solid rgba(255,255,255,0.1); 
@@ -103,7 +99,6 @@
         .btn { transition: all 0.2s ease; }
         .btn:active { transform: scale(0.95); }
 
-        /* --- SINAV KARTLARI --- */
         .exam-card { 
             background: rgba(14, 165, 233, 0.1); 
             border-left: 4px solid var(--info-color); 
@@ -157,7 +152,9 @@
                     {% csrf_token %}
                     <div class="row g-3">
                         <div class="col-12">{{ form.subject }}</div>
-                        <div class="col-6">{{ form.duration_minutes }}</div>
+                        <div class="col-6">
+                            {{ form.duration_minutes }}
+                        </div>
                         <div class="col-6">{{ form.date }}</div>
                         <button type="submit" name="add_study" class="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow">Dersi Programa İşle</button>
                     </div>
@@ -200,11 +197,27 @@
                         <p class="text-center text-muted py-3">Bugünlük plan yok.</p>
                         {% endfor %}
                     </div>
+                    
                     <div class="tab-pane fade" id="week">
-                        {% for t in weekly_tasks %}<div class="task-item"><span><strong>{{ t.date|date:"d M" }}</strong> - {{ t.subject }}</span></div>{% endfor %}
+                        {% for t in weekly_tasks %}
+                        <div class="task-item">
+                            <span><strong>{{ t.date|date:"d M" }}</strong> - {{ t.subject }} ({{ t.duration_minutes }} dk)</span>
+                            <button onclick="deleteTask({{ t.id }})" class="btn text-danger p-0">🗑️</button>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted py-3">Bu hafta için plan yok.</p>
+                        {% endfor %}
                     </div>
+
                     <div class="tab-pane fade" id="month">
-                        {% for t in monthly_tasks %}<div class="task-item"><span><strong>{{ t.date|date:"d/m" }}</strong> - {{ t.subject }}</span></div>{% endfor %}
+                        {% for t in monthly_tasks %}
+                        <div class="task-item">
+                            <span><strong>{{ t.date|date:"d/m" }}</strong> - {{ t.subject }} ({{ t.duration_minutes }} dk)</span>
+                            <button onclick="deleteTask({{ t.id }})" class="btn text-danger p-0">🗑️</button>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted py-3">Bu ay için plan yok.</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
