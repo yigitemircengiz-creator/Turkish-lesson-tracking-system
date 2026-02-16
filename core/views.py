@@ -39,13 +39,18 @@ def dashboard(request):
                 exam.save()
                 return redirect('dashboard')
 
+   
     now = timezone.now()
     today = now.date()
+    
+   
+    daily_tasks = StudySession.objects.filter(user=request.user, date__date=today).order_by('date')
+    
+   
     weekday = now.weekday()
     start_week = (now - timedelta(days=weekday)).replace(hour=0, minute=0, second=0, microsecond=0)
     start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
-    daily_tasks = StudySession.objects.filter(user=request.user, date__date=today).order_by('date')
     weekly_tasks = StudySession.objects.filter(user=request.user, date__gte=start_week).order_by('date')
     monthly_tasks = StudySession.objects.filter(user=request.user, date__gte=start_month).order_by('date')
     exams = Exam.objects.filter(user=request.user, date__gte=now).order_by('date')
@@ -88,6 +93,7 @@ def toggle_task(request, task_id):
 
 @login_required
 def delete_task(request, task_id):
+    
     task = get_object_or_404(StudySession, id=task_id, user=request.user)
     task.delete()
     return redirect('dashboard')
