@@ -20,7 +20,6 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    # Formları başlangıçta boş tanımlıyoruz
     study_form = StudySessionForm()
     exam_form = ExamForm()
 
@@ -80,17 +79,15 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
+@login_required
 def toggle_task(request, task_id):
-    if request.method == "POST":
-        task = get_object_or_404(StudySession, id=task_id, user=request.user)
-        task.is_completed = not task.is_completed 
-        task.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+    task = get_object_or_404(StudySession, id=task_id, user=request.user)
+    task.is_completed = not task.is_completed 
+    task.save()
+    return redirect('dashboard')
 
+@login_required
 def delete_task(request, task_id):
-    if request.method == "POST":
-        task = get_object_or_404(StudySession, id=task_id, user=request.user)
-        task.delete()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+    task = get_object_or_404(StudySession, id=task_id, user=request.user)
+    task.delete()
+    return redirect('dashboard')
